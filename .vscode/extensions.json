@@ -2,6 +2,7 @@
     "recommendations": [
         "ms-toolsai.jupyter",
         "ms-vsliveshare.vsliveshare",
-        "ms-python.python"
+        "ms-python.python",
+        "GrapeCity.gc-excelviewer"
     ]
 }
