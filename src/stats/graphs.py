@@ -14,11 +14,12 @@ def plot_salary_per_district(districts):
 
 def plot_card_type_distribution(cards):
     card_types = {}
+    print(cards.head())
     total = cards.shape[0]
-    types = cards['card_type'].unique()
+    types = cards['type'].unique()
 
     for t in types:
-        card_types[t] = cards[cards['card_type'] == t].shape[0]
+        card_types[t] = cards[cards['type'] == t].shape[0]
 
     y = np.array([v * 100 / total for v in card_types.values()])
     mylabels = [k + ' - ' + str(v) for k,v in card_types.items()]
