@@ -14,7 +14,6 @@ def plot_salary_per_district(districts):
 
 def plot_card_type_distribution(cards):
     card_types = {}
-    print(cards.head())
     total = cards.shape[0]
     types = cards['type'].unique()
 
@@ -47,8 +46,6 @@ def plot_monthly_payment_per_loan_amount(loans):
 
     status = []
 
-    print(loans["status"].unique())
-
     for s in loans["status"]:
         status.append(0) if s == -1 else status.append(100) 
 
@@ -58,7 +55,6 @@ def plot_monthly_payment_per_loan_amount(loans):
 
 
 def plot_monthly_payment_per_status(loans):
-    # status and monthly payment
     x = [x for x in loans['status']]
     y = [y for y in loans['monthly_payment']]
 
