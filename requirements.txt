@@ -1,2 +1,7 @@
 pandas
 numpy
+sklearn
+scikit_learn
+scipy
+matplotlib
+imbalanced-learn
