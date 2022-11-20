@@ -47,7 +47,7 @@ def plot_monthly_payment_per_loan_amount(loans):
     status = []
 
     for s in loans["status"]:
-        status.append(0) if s == -1 else status.append(100) 
+        status.append('#00ff00') if s == 1 else status.append('#ff0000') 
 
     plt.scatter(loans["amount"],loans["monthly_payment"], alpha=.7, edgecolor='k', s = 50, c=status)
     plt.xlabel('x - loan amount')
