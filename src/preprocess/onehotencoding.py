@@ -1,5 +1,6 @@
 import pandas as pd
 
+
 def extract_categorical(table, columnName):
     df_binary_columns = pd.get_dummies(table[columnName])
     for column in df_binary_columns.columns:
