@@ -62,3 +62,8 @@ def train_test_split_unbalanced(data, target_column, sampling_strategy="smote_to
     y_test = target[train_size:]
 
     return x_train, x_test, y_train, y_test
+
+
+def self_confidence_score(y_proba):
+    l = y_proba.tolist()
+    return sum(map(lambda x: 2*abs(x - 0.5), l)) / len(l)
