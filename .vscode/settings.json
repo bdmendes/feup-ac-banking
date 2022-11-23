@@ -4,5 +4,6 @@
         "%load_ext autoreload",
         "%autoreload 2"
     ],
-    "csv-preview.separator": ";"
+    "csv-preview.separator": ";",
+    "python.formatting.provider": "yapf"
 }
