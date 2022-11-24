@@ -58,3 +58,18 @@ def extract_categorical(table, columnName):
         table[column] = df_binary_columns[column]
 
     return table.drop(axis=1, columns=[columnName])
+
+def extract_age(row):
+	(owner_year, owner_month, owner_day) = row['owner_year'], row['owner_month'], row['owner_day']
+	(loan_year, loan_month, loan_day) = row['year'], row['month'], row['day']
+	owner_age = -1
+	if owner_year <= loan_year:
+		owner_age = loan_year - owner_year
+		if owner_month == loan_month:
+			if owner_day > loan_day:
+				owner_age -= 1
+		elif owner_month > loan_month:
+			owner_age -= 1
+	# if owner_age == -1:	# just for testing (checks if birthdate is after loan)
+	# 	print("incorrect owner_year !")
+	return owner_age
