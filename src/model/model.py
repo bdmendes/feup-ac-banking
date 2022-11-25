@@ -5,9 +5,22 @@ import pandas as pd
 
 
 def train_test_split_unbalanced(data, target_column, sampling_strategy="smote_tomek", sort_by_date=True, train_ratio=0.8):
-    target = data[target_column]
-    independent = data.drop(target_column, axis=1)
+    # order dataset for splitting
+    if sort_by_date:
+        data = data.sort_values(by=['year', 'month', 'day'])
+    else:
+        data = data.sample(frac=1, random_state=0).reset_index(drop=True)
 
+    # split dataset
+    independent = data.drop(target_column, axis=1)
+    target = data[target_column]
+    train_size = int(len(independent) * train_ratio)
+    x_train = independent[:train_size]
+    y_train = target[:train_size]
+    x_test = independent[train_size:]
+    y_test = target[train_size:]
+
+    # balance dataset
     if sampling_strategy != None and sampling_strategy != "":
         match sampling_strategy:
             # oversampling
@@ -43,23 +56,7 @@ def train_test_split_unbalanced(data, target_column, sampling_strategy="smote_to
                 sampler = SMOTEENN(random_state=0)
             case _:
                 raise ValueError("Unknown sampling strategy")
-        independent, target = sampler.fit_resample(independent, target)
-
-    # order dataset properly for splitting
-    data = pd.concat([independent, target], axis=1)
-    if sort_by_date:
-        data = data.sort_values(by=['year', 'month', 'day'])
-    else:
-        data = data.sample(frac=1, random_state=0).reset_index(drop=True)
-    independent = data.drop(target_column, axis=1)
-    target = data[target_column]
-
-    # split dataset
-    train_size = int(len(independent) * train_ratio)
-    x_train = independent[:train_size]
-    y_train = target[:train_size]
-    x_test = independent[train_size:]
-    y_test = target[train_size:]
+        x_train, y_train = sampler.fit_resample(x_train, y_train)
 
     return x_train, x_test, y_train, y_test
 
