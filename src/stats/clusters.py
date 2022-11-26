@@ -32,7 +32,7 @@ def cluster_transactions(transactions):
     df = table[['credit', 'withdrawal', 'withdrawal in cash', 'household', 'insurrance payment',
                 'interest credited', 'old-age pension', 'payment for statement', 'sanction interest if negative balance']]
     table['transaction_profile'] = KMeans(
-        n_clusters=10, random_state=1).fit_predict(df)
+        n_clusters=5, random_state=1).fit_predict(df)
 
     return table[['account_id', 'transaction_profile']]
 
