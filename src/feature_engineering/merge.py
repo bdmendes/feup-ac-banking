@@ -5,7 +5,7 @@ def merge_dispositions_cards(dispositions, cards):
     cards = cards.drop(columns=['card_id'])
     cards.columns = "card_" + cards.columns.values
     cards.rename(columns={'card_disp_id': 'disp_id'}, inplace=True)
-    dispositions = dispositions.merge(cards, on="disp_id", how="left")
+    dispositions = dispositions.merge(cards[['disp_id','card_type']], on="disp_id", how="left").fillna('missing')
     return dispositions
 
 

@@ -32,6 +32,16 @@ def cluster_transactions(transactions):
     df = table[['credit', 'withdrawal', 'withdrawal in cash', 'household', 'insurrance payment',
                 'interest credited', 'old-age pension', 'payment for statement', 'sanction interest if negative balance']]
     table['transaction_profile'] = KMeans(
-        n_clusters=10, random_state=1).fit_predict(df)
+        n_clusters=5, random_state=1).fit_predict(df)
 
     return table[['account_id', 'transaction_profile']]
+
+def cluster_districts(districts):
+    df = districts[['district_no_inhabitants', 'district_no_cities', 'district_urban_inhabitants_ratio',
+        'district_average_salary', 'district_unemployment_rate', 'districts_entrepreneurs_ratio', 'district_crimes_per_inhabitant','district_crime_growth']]
+
+    districts['districts_profile'] = KMeans(
+        n_clusters=10, random_state=1).fit_predict(df)
+
+    return districts[['district_id', 'districts_profile', 'district_average_salary']]
+    
