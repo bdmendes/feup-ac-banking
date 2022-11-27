@@ -10,11 +10,28 @@ def merge_dispositions_cards(dispositions, cards):
 
 
 def merge_account_transactions(accounts, transactions):
-    average_account_balances = transactions.groupby(
-        ["account_id"])["balance"].mean().to_frame()
-    average_account_balances.rename(
-        columns={'balance': 'account_average_balance'}, inplace=True)
-    return accounts.merge(average_account_balances, on="account_id")
+    # extract credit and debit per month
+    positive_transactions = transactions[transactions['type'] == "credit"]
+    negative_transactions = transactions[transactions['type'] != "credit"]
+
+    account_credit_per_month = positive_transactions.fillna(0).groupby(
+        ["account_id", "month"])["amount"].sum().to_frame().groupby("account_id").mean()
+    account_credit_per_month.columns = ["average_account_credit_per_month"]
+
+    account_debit_per_month = negative_transactions.fillna(0).groupby(
+        ["account_id", "month"])["amount"].sum().to_frame().groupby("account_id").mean()
+    account_debit_per_month.columns = ["average_account_debit_per_month"]
+    account_debit_per_month["average_account_debit_per_month"] = account_debit_per_month["average_account_debit_per_month"].abs()
+
+    # average balance per month
+    account_balance_per_month = transactions.fillna(0).groupby(
+        ["account_id", "month"])["balance"].mean().to_frame().groupby("account_id").mean()
+    account_balance_per_month.columns = ["average_account_balance_per_month"]
+
+    accounts = accounts.merge(account_credit_per_month, on="account_id", how="left")  \
+        .merge(account_debit_per_month, on="account_id", how="left") \
+        .merge(account_balance_per_month, on="account_id", how="left")
+    return accounts.fillna(0)
 
 
 def merge_account_dispositions(accounts, dispositions):
