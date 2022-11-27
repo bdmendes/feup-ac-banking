@@ -5,16 +5,34 @@ def merge_dispositions_cards(dispositions, cards):
     cards = cards.drop(columns=['card_id'])
     cards.columns = "card_" + cards.columns.values
     cards.rename(columns={'card_disp_id': 'disp_id'}, inplace=True)
-    dispositions = dispositions.merge(cards[['disp_id','card_type']], on="disp_id", how="left").fillna('missing')
+    dispositions = dispositions.merge(
+        cards[['disp_id', 'card_type']], on="disp_id", how="left").fillna('missing')
     return dispositions
 
 
 def merge_account_transactions(accounts, transactions):
-    average_account_balances = transactions.groupby(
-        ["account_id"])["balance"].mean().to_frame()
-    average_account_balances.rename(
-        columns={'balance': 'account_average_balance'}, inplace=True)
-    return accounts.merge(average_account_balances, on="account_id")
+    # extract credit and debit per month
+    positive_transactions = transactions[transactions['type'] == "credit"]
+    negative_transactions = transactions[transactions['type'] != "credit"]
+
+    account_credit_per_month = positive_transactions.fillna(0).groupby(
+        ["account_id", "month"])["amount"].sum().to_frame().groupby("account_id").mean()
+    account_credit_per_month.columns = ["average_account_credit_per_month"]
+
+    account_debit_per_month = negative_transactions.fillna(0).groupby(
+        ["account_id", "month"])["amount"].sum().to_frame().groupby("account_id").mean()
+    account_debit_per_month.columns = ["average_account_debit_per_month"]
+    account_debit_per_month["average_account_debit_per_month"] = account_debit_per_month["average_account_debit_per_month"].abs()
+
+    # average balance per month
+    account_balance_per_month = transactions.fillna(0).groupby(
+        ["account_id", "month"])["balance"].mean().to_frame().groupby("account_id").mean()
+    account_balance_per_month.columns = ["average_account_balance_per_month"]
+
+    accounts = accounts.merge(account_credit_per_month, on="account_id", how="left")  \
+        .merge(account_debit_per_month, on="account_id", how="left") \
+        .merge(account_balance_per_month, on="account_id", how="left")
+    return accounts.fillna(0)
 
 
 def merge_account_dispositions(accounts, dispositions):
@@ -46,7 +64,9 @@ def merge_accounts_districts(accounts, districts):
                      axis=1, inplace=True)
     accounts = accounts.merge(
         districts, on="district_id", how="left", suffixes=('', '_account'))
-    accounts.drop(columns=['district_id'], inplace=True)
+    #accounts.drop(columns=['district_id'], inplace=True)
+    accounts.rename(
+        columns={'district_id': 'account_district_id'}, inplace=True)
     return accounts
 
 
@@ -57,5 +77,6 @@ def merge_client_districts(clients, districts):
         columns={'owner_district_id': 'district_id'}, inplace=True)
     clients = clients.merge(
         districts, on="district_id", how="left")
-    clients.drop(columns=['district_id'], inplace=True)
+    #clients.drop(columns=['district_id'], inplace=True)
+    clients.rename(columns={'district_id': 'owner_district_id'}, inplace=True)
     return clients
