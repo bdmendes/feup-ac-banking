@@ -1,4 +1,4 @@
-from imblearn.over_sampling import RandomOverSampler, ADASYN, SMOTE
+from imblearn.over_sampling import RandomOverSampler, ADASYN, SMOTE, SVMSMOTE, KMeansSMOTE, BorderlineSMOTE
 from imblearn.under_sampling import ClusterCentroids, EditedNearestNeighbours, AllKNN, RandomUnderSampler, TomekLinks, CondensedNearestNeighbour, OneSidedSelection, NeighbourhoodCleaningRule, InstanceHardnessThreshold
 from imblearn.combine import SMOTETomek, SMOTEENN
 
@@ -24,6 +24,12 @@ def train_test_split_unbalanced(data, target_column, sampling_strategy="smote", 
     if sampling_strategy != None and sampling_strategy != "":
         match sampling_strategy:
             # oversampling
+            case "svmsmote" | "SVMSMOTE":
+                sampler = SVMSMOTE(random_state=random_state)
+            case "kmeanssmote" | "KMeansSMOTE":
+                sampler = KMeansSMOTE(random_state=random_state)
+            case "borderlinesmote" | "BorderlineSMOTE":
+                sampler = BorderlineSMOTE(random_state=random_state)
             case "SMOTE" | "smote":
                 sampler = SMOTE(random_state=random_state)
             case "random":
