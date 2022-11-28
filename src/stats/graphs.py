@@ -40,6 +40,20 @@ def plot_gender_distribution(clients):
     plt.pie(y, labels = mylabels)
     plt.show() 
 
+def plot_status_distribution(loans):
+    loans_status = {}
+    total = loans.shape[0]
+    status_values = loans['status'].unique()
+
+    for result in status_values:
+        loans_status[result] = loans[loans['status'] == result].shape[0]
+
+    y = np.array([v * 100 / total for v in loans_status.values()])
+    mylabels = [str(k) + ' - ' + str(v) for k,v in loans_status.items()]
+
+    plt.pie(y, labels = mylabels)
+    plt.show() 
+
 
 def plot_monthly_payment_per_loan_amount(loans):
     import matplotlib.pyplot as plt
