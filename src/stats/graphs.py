@@ -49,7 +49,7 @@ def plot_status_distribution(loans):
         loans_status[result] = loans[loans['status'] == result].shape[0]
 
     y = np.array([v * 100 / total for v in loans_status.values()])
-    mylabels = [str(k) + ' - ' + str(v) for k,v in loans_status.items()]
+    mylabels = [str("status (") +str(k) + ') - ' + str(v) for k,v in loans_status.items()]
 
     plt.pie(y, labels = mylabels)
     plt.show() 
