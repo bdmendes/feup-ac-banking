@@ -57,15 +57,19 @@ def plot_status_distribution(loans):
 
 def plot_monthly_payment_per_loan_amount(loans):
     import matplotlib.pyplot as plt
+    from matplotlib.colors import ListedColormap
 
-    status = []
+    # status = []
+    # for s in loans["status"]:
+    #     status.append('#00ff00') if s == 1 else status.append('#ff0000') 
 
-    for s in loans["status"]:
-        status.append('#00ff00') if s == 1 else status.append('#ff0000') 
+    color_labels = ['rejected','accepted']
+    colors = ListedColormap(['#ff0000', '#00ff00'])
 
-    plt.scatter(loans["amount"],loans["monthly_payment"], alpha=.7, edgecolor='k', s = 50, c=status)
+    scatter = plt.scatter(loans["amount"],loans["monthly_payment"], alpha=.7, edgecolor='k', s = 50, c=loans["status"], cmap=colors)
     plt.xlabel('x - loan amount')
     plt.ylabel('y - monthly payment')
+    plt.legend(handles=scatter.legend_elements()[0], labels=color_labels)
 
 
 def plot_monthly_payment_per_status(loans):
