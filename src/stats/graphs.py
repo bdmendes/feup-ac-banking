@@ -40,18 +40,36 @@ def plot_gender_distribution(clients):
     plt.pie(y, labels = mylabels)
     plt.show() 
 
+def plot_status_distribution(loans):
+    loans_status = {}
+    total = loans.shape[0]
+    status_values = loans['status'].unique()
+
+    for result in status_values:
+        loans_status[result] = loans[loans['status'] == result].shape[0]
+
+    y = np.array([v * 100 / total for v in loans_status.values()])
+    mylabels = [str("status (") +str(k) + ') - ' + str(v) for k,v in loans_status.items()]
+
+    plt.pie(y, labels = mylabels)
+    plt.show() 
+
 
 def plot_monthly_payment_per_loan_amount(loans):
     import matplotlib.pyplot as plt
+    from matplotlib.colors import ListedColormap
 
-    status = []
+    # status = []
+    # for s in loans["status"]:
+    #     status.append('#00ff00') if s == 1 else status.append('#ff0000') 
 
-    for s in loans["status"]:
-        status.append(0) if s == -1 else status.append(100) 
+    color_labels = ['rejected','accepted']
+    colors = ListedColormap(['#ff0000', '#00ff00'])
 
-    plt.scatter(loans["amount"],loans["monthly_payment"], alpha=.7, edgecolor='k', s = 50, c=status)
+    scatter = plt.scatter(loans["amount"],loans["monthly_payment"], alpha=.7, edgecolor='k', s = 50, c=loans["status"], cmap=colors)
     plt.xlabel('x - loan amount')
     plt.ylabel('y - monthly payment')
+    plt.legend(handles=scatter.legend_elements()[0], labels=color_labels)
 
 
 def plot_monthly_payment_per_status(loans):

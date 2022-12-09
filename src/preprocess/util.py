@@ -72,4 +72,15 @@ def extract_age(row):
                 owner_age -= 1
         elif owner_month > loan_month:
             owner_age -= 1
-    return owner_age
+
+    if owner_age < 18:
+        return 0
+    if owner_age < 30:
+        return 1
+    if owner_age < 45:
+        return 2
+    if owner_age < 60:
+        return 3
+    if owner_age < 75:
+        return 4
+    return 5
